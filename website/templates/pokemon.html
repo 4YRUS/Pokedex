@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<h2>
+	<div class="card mb-3" style="width: 50vw; height: 55vh; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); border-radius: 10px; ">
+	  <div class="row g-0">
+	    <div class="col-md-4">
+	      <img src="..." class="img-fluid rounded-start pokemon-image" alt="..." style="position: relative; top: 50%; left: 50%; transform: translate(-50%,-50%);">
+	    </div>
+	    <div class="col-md-8" style="background-color : #f95767; border-radius: 10px">
+	      <div class="card-body" style="height: 55vh; ">
+	        <h2 class="card-title pokemon-name">{{search}}</h2>
+	        <h5><b>Type :</b><span class='pokemon-type'></span></h5>
+	        <h5><b>Stats : </b><span><span class="pokemon-stats" style="padding-left: 10px;"></span></span></h5>
+	        <h5><b>Abilities : </b><span class="pokemon-ability"></span></h5>
+	        <h5 style="height: 50px; overflow: auto;"><b>MoveSet :</b><span class="pokemon-moves"></span></h5>
+	        <h5><b>Height : </b><span class="pokemon-height"></span></h5>
+	        <h5><b>Weight : </b><span class="pokemon-weight"></span></h5>	        
+	      </div>
+	    </div>
+	  </div>
+	  <center><a class='btn btn-danger home-button' href="{% url 'home' %}">HOME</a></center>
+	</div>
+</h2>
+
+<script type="text/javascript">
+	name=document.querySelector('.pokemon-name').innerText.toLowerCase();
+	document.querySelector('.pokemon-name').innerText=name.toUpperCase();
+	type=document.querySelector('.pokemon-type');
+	stats=document.querySelector('.pokemon-stats');
+	ability=document.querySelector('.pokemon-ability');
+	move=document.querySelector('.pokemon-moves');
+	height=document.querySelector('.pokemon-height');
+	weight=document.querySelector('.pokemon-weight');
+	image=document.querySelector('.pokemon-image');
+	button=document.querySelector('.home-button')
+
+	get_details(name)
+
+	async function get_details(name){
+
+		response= await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
+		if (!response.ok){
+			alert(' Pokemon your searching for Dosent Exits ')
+			button.click()
+			return 
+		}
+		data = await response.json()
+
+		types=' '
+		for( const item of data.types){
+			types+=item.type.name
+			types+=', '
+		}
+		type.innerText+=types
+
+		abilities=' ' 
+		for (const item of data.abilities)
+		{
+			abilities+=item.ability.name
+			abilities+=', '
+		}
+		ability.innerText+=abilities
+
+		moves=' '
+		i=0
+		for (const item of data.moves)
+		{	
+			moves+=item.move.name
+			moves+=', '
+			i+=1
+			
+		}
+		move.innerText+=moves
+
+		h= data.height.toString()
+		height.innerText+=' '+h
+
+		w=data.weight.toString()
+		weight.innerText+=' '+w
+
+		image.src=data.sprites.front_default
+		image.style.width='200px';
+		image.style.height='200px'
+
+		console.log(stats)
+		stats.innerText+=`\nHP : ${data.stats[0].base_stat} \nAttack : ${data.stats[1].base_stat}\nSpecial-Attack : ${data.stats[2].base_stat}\nSpecial-defense : ${data.stats[3].base_stat}\nSpeed : ${data.stats[4].base_stat}`
+
+
+	}
+
+</script>
+{% endblock %}

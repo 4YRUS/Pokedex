@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class='container' style='width: 40vw; height: 45vh; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); background-color: #f95767; border-radius: 20px ; padding-top: 20px;	'>
+	<form method="POST">
+		{% csrf_token %}
+		{{form.as_p}}
+		<input type="submit" class='btn btn-danger'>
+	</form>
+</div>
+{% endblock %}

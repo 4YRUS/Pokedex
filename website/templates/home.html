@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style type="text/css">
+	.it-contains{
+		width: 100vw;
+		height: calc(100vh - 60.5px);
+		overflow: auto;
+		display: flex;
+	}
+	.item-contain{
+		width: 90vw;
+		display: flex;
+		flex-wrap: wrap;
+		position: relative;
+		left: 52%;
+		transform: translate(-50%,0%);
+	}
+
+</style>
+
+<div class="it-contains">
+	<div class='item-contain'>	 
+ 	</div>
+</div>
+<!-- 
+	<div class="card" style="width: 200px; height: 250px; margin: 9px;  display: flex; flex-direction: column; justify-content: space-between;">
+	  <img src="..." class="card-img-top" alt="..." >
+	  <div style="margin: 10px;">
+	    <center><h5 class="card-title">TITLE</h5>
+	    <a href="#" class="btn btn-danger">View</a></center>
+	  </div>
+	</div> -->
+
+<script type="text/javascript">
+	let image=document.querySelector('#image')
+	let title=document.querySelector('#title')
+	let container=document.querySelector('.item-contain')
+
+	let type_colour = {
+    "normal": "#A8A878",
+    "fire": "#F08030",
+    "water": "#6890F0",
+    "electric": "#F8D030",
+    "grass": "#78C850",
+    "ice": "#98D8D8",
+    "fighting": "#C03028",
+    "poison": "#A040A0",
+    "ground": "#E0C068",
+    "flying": "#A890F0",
+    "psychic": "#F85888",
+    "bug": "#A8B820",
+    "rock": "#B8A038",
+    "ghost": "#705898",
+    "dragon": "#7038F8",
+    "dark": "#705848",
+    "steel": "#B8B8D0",
+    "fairy": "#EE99AC"
+}
+
+
+	let i=0;
+
+	fetch(`https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0`)
+	.then(response => response.json())
+	.then(data=> {
+		console.log(data.results[0])
+		for(i=0;i<100;i++){
+			fetchData(data.results[i].url)
+		}
+	})
+	
+	async function fetchData(url){
+		
+		try{
+			const response = await fetch(`${url}`)
+			if(!response.ok){
+				throw new Error('could not fetch resourse ')
+			}
+			const data = await response.json()
+
+			const pokemon_sprite=data.sprites.front_default;
+			
+			type=data.types[0].type.name
+
+			
+
+			container.innerHTML+=`
+			<div class="card" style="border: 2px solid #f95767;width: 200px; height: 250px; margin: 9px;  display: flex; flex-direction: column; justify-content: space-between; justify-content: center; align-items: center;">
+			  <img src="${pokemon_sprite}" class="card-img-top" alt="..." style='width: 150px; height: 150px;'>
+			  <center><div style="margin: 10px;">
+			    <h5 class="card-title" style='border-radius: 3px;  background-color: ${type_colour[type]}; color: white'>${type}</h5>
+			    <a href="search/${data.name}" class="btn btn-danger">${data.name.toUpperCase()}</a>
+			  </div></center>
+			</div>
+			`
+			
+		}
+		catch(error){
+			console.error(error)
+		}
+
+		}
+
+</script>
+{% endblock %}
